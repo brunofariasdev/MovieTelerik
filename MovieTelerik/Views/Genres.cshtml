@@ -1,0 +1,7 @@
+﻿@model MovieTelerik.Models.Genre
+
+@(Html.Kendo().DropDownList()
+    .DataValueField("Id")
+    .DataTextField("Name")
+    .BindTo((System.Collections.IEnumerable)ViewData["Genres"])
+ )

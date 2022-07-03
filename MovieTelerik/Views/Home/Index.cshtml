@@ -1,0 +1,191 @@
+﻿@model MovieAndGenre;
+@using Kendo.Mvc
+@{
+    ViewData["Title"] = "MovieScoreTelerik";
+}
+<div>
+
+        @*<form class="k-overlay align-items-center justify-content-center" id="modalgenre" asp-action="CreateGenre">
+            <div id="modal-addGenre">
+                <div class="modal-header">
+                    <h3>Adicione um Genero</h3>
+                </div>
+                <div class="">
+                    <input asp-for="Genre.Name" placeholder="Digite um Genero" />
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" value="CreateGenre">Adiconar Genero</button>
+                    <button>Sair</button>
+                </div>
+            </div>
+        </form*@>
+    
+    
+    <div class="k-widget k-tilelayout">
+        <div class="k-tilelayout-item k-card" id="tasks-ontrack-template" type="text/html">
+            <div style="font-size: 84px; line-height: 101px; color:#F31700">@Model.Movies.Count()</div>
+            <div class="k-card-title">Movies</div>
+        </div>
+        <div class="k-tilelayout-item k-card" id="issues-template" type="text/html">
+            <div style="font-size: 84px; line-height: 101px; color:#37B400">@(30 - Model.Movies.Count())</div>
+            <div class="k-card-title">Space</div>
+        </div>
+        <div class="k-tilelayout-item k-card" id="overdue-tasks-template" type="text/html">
+            <div style="font-size: 84px; line-height: 101px; color:#FFC000">@Model.GenreCount</div>
+            <div class="k-card-title">Genre</div>
+        </div>
+    </div>
+
+    <div id="container-charts-movie">
+        @(Html.Kendo().Chart(Model.Movies)
+            .Name("chart")
+            .Title("Score Movies").Theme("black")
+            .Series(movies => {
+                movies.Column(model => model.MetaScore)
+                .Name("Movie")
+                .Color("#151515");
+            })
+            .SeriesDefaults(seriesDefaults => seriesDefaults
+                .Column().Stack(true)
+            )
+            .Legend(legend => legend
+			    .Position(ChartLegendPosition.Bottom)
+			    .Align(ChartLegendAlign.Center)
+		    )
+            .CategoryAxis(axis => axis.Categories(model => model.Title))
+        
+        )
+    </div>
+        @(Html.Kendo().Grid<MovieTelerik.Models.Movie>(Model.Movies)
+            .Name("grid")
+            .Columns(columns =>
+            {
+                columns.Select().Width(50);
+                columns.Group(group => group
+                    .Title("Movie")
+                    .Columns(table =>
+                    {
+                        table.Bound(x => x.UrlImg).ClientTemplate("<span class='movie-img'><img src='"+ "#: UrlImg #" + "'/></span>").Title("Image");
+                        table.Bound(x => x.Title).Title("Title");
+                        table.Bound(x => x.Resume).Title("Resume");
+                        table.Bound(x => x.GenreId).Title("Genre").ClientTemplate("<span>"+"#: Genre.Name #"+"</span>");
+                        table.Bound(x => x.MetaScore).Title("Score").ClientTemplate("<span class='score k-avatar k-rounded-full k-avatar-lg "+ "#if(MetaScore <= 49 && MetaScore >= 0){#score-red#}if(MetaScore >= 50 && MetaScore <= 74){#score-yellow#}if(MetaScore > 74){#score-green#}#" +"'>"+ "#: MetaScore #" +"</span>");
+                        table.Command(command => {command.Edit().HtmlAttributes(new {style = "background: #ff8d00;"}); command.Destroy().HtmlAttributes(new {style = "background: red;"});});
+                    })
+                );
+                
+            })
+            .ToolBar(t =>
+            {
+                t.Create();
+                t.Pdf().Text("Export in PDF");
+            })
+            .Editable(editable => editable.Mode(GridEditMode.PopUp).DisplayDeleteConfirmation("Want delete thant Movie??"))
+            .Search(s =>
+            {
+                s.Field(c => c.Title);
+            })
+            .Groupable()
+            .Pageable(p => p.ButtonCount(5).Input(true))
+            .Sortable()
+            .HtmlAttributes(new { style = "height:850px;" })
+            .DataSource(datasource => datasource
+                .Ajax()
+                .PageSize(5)
+                .Model(model => {
+                    model.Id(p => p.Id);
+                    model.Field(p => p.Id).Editable(false);
+                    model.Field(p => p.GenreId);
+
+                })
+                .Read(read => read.Action("GetAllMovies", "Home"))
+                .Create(data => data.Action("CreateMovie", "Home"))
+                .Update(data => data.Action("UpdateMovie", "Home"))
+                .Destroy(data => data.Action("DeleteMovie", "Home"))
+            )
+        )
+
+</div>
+
+<script type="text/javascript">
+    function returnFalse(){
+        return false;
+    }
+
+</script>
+<style>
+    .k-widget{
+        width: 50%;
+    }
+    .k-footer-template {
+        display: none;
+    }
+
+    .k-card-header {
+        flex: 0 0 auto;
+    }
+    .k-master-row:hover{
+        background: #8a8b8a7a !important;
+        cursor: pointer;
+    }
+
+    .k-card-body {
+        overflow: hidden;
+    }
+    .k-widget{
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+    }
+    .k-card{
+        width: 14rem;
+        margin: 1rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+}
+    }
+    .card-container{
+        background-color: cadetblue;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    #container-charts-movie{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        background: #151515;
+    }
+     #container-charts-movie #chart{
+         width: 70%;
+     }
+    .movie-img{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .movie-img img{
+        width: 10rem;
+        height: 6rem;
+        border: solid white 2px;
+        border-radius: 3px;
+    }
+    .score{
+        color: white;
+        font-weight: bold;
+        font-size: 1.8rem;
+    }
+    .score-green{
+         background-color: lawngreen;
+    }
+    .score-yellow{
+        background-color: #FFCC33;
+    }
+    .score-red{
+        background-color: red;
+    }
+</style>
