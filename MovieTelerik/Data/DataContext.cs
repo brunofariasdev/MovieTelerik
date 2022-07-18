@@ -14,25 +14,9 @@ namespace MovieTelerik.Data
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            //builder.Entity<Movie>()
-            //    .HasOne(x => x.Genre)
-            //    .WithMany(x => x.Movies)
-            //    .HasForeignKey(x => x.GenreId)
-            //    .OnDelete(DeleteBehavior.Cascade);
-
-            //builder.Entity<Movie>()
-            //    .HasMany(x => x.Genres)
-            //    .WithOne(op => op.Movie)
-            //    .HasForeignKey(@"MovieId")
-            //    .IsRequired(true);
-
-            //builder.Entity<Genre>()
-            //    .HasOne(x => x.Movie)
-            //    .WithMany(op => op.Genres)
-            //    .HasForeignKey(@"MovieId")
-            //    .IsRequired(true);
-
-           
+            builder.Entity<Movie>()
+                .HasOne(x => x.Genre);
+            
         }
 
 

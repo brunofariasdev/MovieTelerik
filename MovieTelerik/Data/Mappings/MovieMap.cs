@@ -52,14 +52,6 @@ namespace MovieTelerik.Data.Mappings
                 .HasColumnType("NVARCHAR")
                 .HasMaxLength(250);
 
-            //builder
-            //  .HasOne(x => x.Genre)
-            //  .WithMany(g => g.Movies)
-            //  .HasForeignKey(x => x.GenreId)
-            //  .OnDelete(DeleteBehavior.Cascade);
-
-
-
 
         }
     }

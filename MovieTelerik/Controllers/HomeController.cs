@@ -18,33 +18,37 @@ namespace MovieTelerik.Controllers
 
         public IActionResult Index()
         {
+            PopulateGenres();
             var data = new MovieAndGenre();
             data.Movies = GetAllMovies();
             data.GenreCount = GetAllGenres().Count();
+            data.Genres = GetAllGenres();
+            data.DefaultGenre = data.Genres.First();
             return View(data);
         }
 
 
         public IEnumerable<Movie> GetAllMovies()
         {
-            var x = _movie.GetAll();
+            var movies = _movie.GetAll();
 
-            return x;
+            return movies;
         }
 
-        public void CreateMovie(Movie movie)
+        public IActionResult CreateMovie(Movie movie)
         {
             if (movie != null)
             {
                 _movie.Create(movie);
             }
+            return RedirectToAction(nameof(Index));
         }
 
         public void UpdateMovie(Movie movie)
         {
+
             if(movie != null)
             {
-                
                 _movie.Update(movie);
             }
         }
@@ -77,6 +81,13 @@ namespace MovieTelerik.Controllers
             {
                 _genre.Update(genre);
             }
+        }
+
+        public void PopulateGenres()
+        {
+            var genres = GetAllGenres();
+            ViewData["AllGenres"] = genres;
+            ViewData["DefaultGenre"] = genres.First();
         }
 
         public void DeleteGenre(Genre genre)

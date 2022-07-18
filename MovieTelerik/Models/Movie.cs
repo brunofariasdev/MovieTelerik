@@ -2,7 +2,7 @@
 
 namespace MovieTelerik.Models
 {
-    public class Movie:EntityBase
+    public class Movie : EntityBase
     {
         public string? Title { get; set; }
         public DateTime CreatedDate { get; set; }
@@ -11,6 +11,7 @@ namespace MovieTelerik.Models
         public int MetaScore { get; set; }
 
         //Navigation Properties
+        [UIHint("ClientGenre")]
         public Genre? Genre { get; set; }
         public int GenreId { get; set; }
 

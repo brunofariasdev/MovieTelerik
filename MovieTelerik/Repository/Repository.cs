@@ -5,8 +5,8 @@ namespace MovieTelerik.Repository
 {
     public class Repository<T> : IRepository<T> where T : EntityBase
     {
-        private DataContext _context; 
-        
+        private DataContext _context;
+
 
         public Repository(DataContext context)
         {
@@ -22,7 +22,7 @@ namespace MovieTelerik.Repository
         {
             var entity = GetById(id);
 
-            if(entity == null)
+            if (entity == null)
             {
                 return;
             }
@@ -43,7 +43,7 @@ namespace MovieTelerik.Repository
 
         public void Update(T model)
         {
-            if(model == null)
+            if (model == null)
             {
                 return;
             }

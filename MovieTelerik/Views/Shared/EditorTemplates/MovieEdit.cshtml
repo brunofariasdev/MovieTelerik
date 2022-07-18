@@ -1,0 +1,45 @@
+﻿@model MovieTelerik.Models.Movie;
+
+<div class="k-edit-form-container">
+        <div class="k-edit-label">
+            @Html.LabelFor(model => model.Title)
+        </div>
+        <div class="k-edit-field">
+            @Html.Kendo().TextBoxFor(m => m.Title)
+        </div>
+        <div class="k-edit-label">
+            @Html.LabelFor(model => model.Resume)
+        </div>
+        <div class="k-edit-field h-50">
+            @Html.Kendo().TextAreaFor(m => m.Resume).HtmlAttributes(new {style = "height: 10rem"})
+        </div>
+        <div class="k-edit-label">
+            @Html.LabelFor(model => model.Genre)
+        </div>
+        <div class="k-edit-field">
+            @(Html.Kendo().DropDownList()
+                .Name("Genre")
+                .DataTextField("Name")
+                .DataValueField("Id")
+                .DataSource(source =>
+                {
+                    source.Read(read =>
+                    {
+                        read.Action("GetAllGenres", "Home");
+                    });
+                })
+            )
+        </div>
+        <div class="k-edit-label">
+            @Html.LabelFor(model => model.MetaScore)
+        </div>
+        <div class="k-edit-field">
+            @Html.Kendo().NumericTextBoxFor(m => m.MetaScore)
+        </div> 
+        <div class="k-edit-label">
+            @Html.LabelFor(model => model.UrlImg)
+        </div>
+        <div class="k-edit-field">
+            @Html.Kendo().TextAreaFor(m => m.UrlImg)
+        </div> 
+</div>
