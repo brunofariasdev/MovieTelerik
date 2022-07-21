@@ -37,10 +37,12 @@ namespace MovieTelerik.Controllers
 
         public IActionResult CreateMovie(Movie movie)
         {
-            if (movie != null)
-            {
-                _movie.Create(movie);
-            }
+                if (movie != null)
+                {
+                    _movie.Create(movie);
+                }
+         
+            
             return RedirectToAction(nameof(Index));
         }
 

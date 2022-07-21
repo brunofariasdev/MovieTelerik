@@ -5,50 +5,7 @@
     ViewData["Title"] = "MovieScoreTelerik";
 }
 <div>
-        <!--Modal Create Genre-->
-        <form asp-action="CreateGenre" class="modal fade" id="createGenre" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Genres</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div class="modal-body">
-                    <div class="form-group">
-                       @(Html.Kendo().Grid<MovieTelerik.Models.Genre>(Model.Genres)
-                        .Name("Genres")
-                        .Columns(columns => {
-                            columns.Bound(p => p.Name).Width(60);
-                            columns.Command(command => {command.Edit().HtmlAttributes(new {style = "background: #ff8d00;"}); command.Destroy().HtmlAttributes(new {style = "background: red;"});}).Width(60);
-                        })
-                        .ToolBar(t =>
-                        {
-                            t.Create().Text("Create Genre");
-                
-                        })
-                        .HtmlAttributes(new { style = "min-height:25rem;" })
-                        .DataSource(datasource => datasource
-                            .Ajax()
-                            .Model(model => {
-                                model.Id(p => p.Id);
-                                model.Field(p => p.Name).Editable(true);
-                            })
-                            .Read(read => read.Action("GetAllGenres", "Home"))
-                            .Create(data => data.Action("CreateGenre", "Home"))
-                            .Update(data => data.Action("UpdateGenre", "Home"))
-                            .Destroy(data => data.Action("DeleteGenre", "Home"))
-                        )
-                        .Scrollable()
-                     )
-                    </div>
-                  </div>
-                 
-                </div>
-            </div>
-        </form>
-
+    <!--Cards Info-->
     <div class="k-widget-custom k-tilelayout py-3">
         <div class="k-tilelayout-item k-card k-card-custom" id="tasks-ontrack-template" type="text/html">
             <div style="font-size: 84px; line-height: 101px; color:#F31700">@Model.Movies.Count()</div>
@@ -63,6 +20,7 @@
             <div class="k-card-title">Genres</div>
         </div>
     </div>
+    <!--Charts-->
     <div id="container-charts-movie">
         @(Html.Kendo().Chart(Model.Movies)
             .Name("chart")
@@ -83,6 +41,7 @@
         
         )
     </div>
+     <!--Movies-->
         @(Html.Kendo().Grid<MovieTelerik.Models.Movie>(Model.Movies)
             .Name("grid")
             .Columns(columns =>
@@ -104,7 +63,7 @@
             })
             .ToolBar(t =>
             {
-                t.Custom().Text("Genres").HtmlAttributes(new {data_toggle = "modal"}).HtmlAttributes(new {data_target = "#createGenre"}).HtmlAttributes(new {type = "button"});
+                t.Custom().Text("Genres").HtmlAttributes(new {onClick = "modalGenre()"});
                 t.Create().Text("Create Movie");
                 t.Pdf().Text("Export in PDF");
                 
@@ -128,13 +87,68 @@
                 })
                 .Read(read => read.Action("GetAllMovies", "Home"))
                 .Create(data => data.Action("CreateMovie", "Home"))
+                .Events(events => events.Error("error_handler"))
                 .Update(data => data.Action("UpdateMovie", "Home"))
                 .Destroy(data => data.Action("DeleteMovie", "Home"))
             )
             .Scrollable()
         )
 
+        <!--Modal Create Genre-->
+        @(Html.Kendo().Window().Name("ModalCreateGenre")
+            .Title("Genres")
+            .Visible(false)
+            .Modal(true)
+            .Content(@<div style="width: 29rem">
+                @(Html.Kendo().Grid<MovieTelerik.Models.Genre>(Model.Genres)
+                    .Name("Genres")
+                    .Columns(columns => {
+                        columns.Bound(p => p.Name).Width(60);
+                        columns.Command(command => {command.Edit().HtmlAttributes(new {style = "background: #ff8d00;"}); command.Destroy().HtmlAttributes(new {style = "background: red;"});}).Width(60);
+                })
+                .ToolBar(t =>
+                {
+                    t.Create().Text("Create Genre");
+                })
+                .HtmlAttributes(new { style = "min-height:25rem;" })
+                .DataSource(datasource => datasource
+                .Ajax()
+                .Model(model => {
+                    model.Id(p => p.Id);
+                    model.Field(p => p.Name).Editable(true);
+                })
+                .Read(read => read.Action("GetAllGenres", "Home"))
+                .Create(data => data.Action("CreateGenre", "Home"))
+                .Update(data => data.Action("UpdateGenre", "Home"))
+                .Destroy(data => data.Action("DeleteGenre", "Home"))
+            )
+            .Scrollable()
+            )
+             </div>)
+        )
+
 </div>
+
+<script>
+    function error_handler(e) {    
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function() {
+                        message += this + "\n";
+                    });
+                }
+            });        
+            alert(message);
+        }
+    }
+
+    function modalGenre() {
+        debugger
+        $("#ModalCreateGenre").data("kendoWindow").center().open();
+    }
+</script>
 
 <style>
     .k-widget-custom{
