@@ -24,6 +24,7 @@ namespace MovieTelerik.Controllers
             data.GenreCount = GetAllGenres().Count();
             data.Genres = GetAllGenres();
             data.DefaultGenre = data.Genres.First();
+            ViewData["Error"] = "Error";
             return View(data);
         }
 
@@ -37,10 +38,34 @@ namespace MovieTelerik.Controllers
 
         public IActionResult CreateMovie(Movie movie)
         {
-                if (movie != null)
+            ViewData["Error"] = "Error2";
+            if (movie != null)
                 {
-                    _movie.Create(movie);
-                }
+                var idGenre = 0;
+                    if (movie.Genre != null)
+                    {
+                        idGenre = movie.Genre.Id;
+                    }
+                    Movie data = new Movie
+                    {
+                        Title = movie.Title,
+                        Resume = movie.Resume,
+                        UrlImg = movie.UrlImg,
+                        MetaScore = movie.MetaScore,
+                        CreatedDate = new DateTime(),
+                        GenreId = idGenre,
+                        Genre = null
+                    };
+                    try
+                    {
+                        _movie.Create(data);
+                        throw new ArgumentException("Error ao adicionar Movie");
+                    }
+                    catch
+                    {
+                        TempData["erro"] = "Descrição do erro";
+                    }
+            }
          
             
             return RedirectToAction(nameof(Index));
@@ -89,7 +114,7 @@ namespace MovieTelerik.Controllers
         {
             var genres = GetAllGenres();
             ViewData["AllGenres"] = genres;
-            ViewData["DefaultGenre"] = genres.First();
+            ViewData["DefaultGenre"] = GetAllGenres().First();
         }
 
         public void DeleteGenre(Genre genre)

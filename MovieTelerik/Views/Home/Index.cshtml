@@ -1,10 +1,17 @@
 ﻿@model MovieAndGenre;
-@using Kendo.Mvc
-@using static MovieTelerik.Models.Genre
+@using Kendo.Mvc;
 @{
     ViewData["Title"] = "MovieScoreTelerik";
+    var error = ViewData["Error"];
 }
 <div>
+    @if (error != null)
+    {
+        <div class="alert alert-danger" role="alert">
+          @error
+        </div>
+    }
+ 
     <!--Cards Info-->
     <div class="k-widget-custom k-tilelayout py-3">
         <div class="k-tilelayout-item k-card k-card-custom" id="tasks-ontrack-template" type="text/html">

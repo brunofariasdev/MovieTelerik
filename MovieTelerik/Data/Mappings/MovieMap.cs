@@ -8,7 +8,7 @@ namespace MovieTelerik.Data.Mappings
     {
         public void Configure(EntityTypeBuilder<Movie> builder)
         {
-            builder.ToTable("Movie");
+            builder.ToTable("Movies");
 
             builder.Property(x => x.Id)
                 .IsRequired()

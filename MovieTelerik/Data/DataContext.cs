@@ -1,5 +1,6 @@
 ﻿using MovieTelerik.Models;
 using Microsoft.EntityFrameworkCore;
+using MovieTelerik.Data.Mappings;
 
 namespace MovieTelerik.Data
 {
